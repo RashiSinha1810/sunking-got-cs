@@ -1,19 +1,22 @@
 package com.example.got.got.model;
+
 import jakarta.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 // Main Unit of battle information
 @Entity
-@Table(name = "battles")
+@Table(name = "battles", indexes = {
+        @Index(name = "idx_battle_number", columnList = "battleNumber"),
+        @Index(name = "idx_battle_name", columnList = "name"),
+})
 public class Battle {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long battleId;
+    private Long battleNumber;
 
     private String name;
     private Integer year;
-    private Integer battleNumber;
 
     private String attackerOutcome;
     private String battleType;
@@ -27,28 +30,21 @@ public class Battle {
     private Boolean summer;
 
     // Can be binary or character
-    @Lob
+    // @Lob
+    @Column(name = "note", columnDefinition = "TEXT")
     private String note;
 
     @OneToMany(mappedBy = "battle", cascade = CascadeType.ALL)
-    private List<BattleParticipant> participants;
+    private Set<BattleParticipant> participants;
+
+    @OneToMany(mappedBy = "battle", cascade = CascadeType.ALL)
+    private Set<BattleLocation> locations;
 
     @ManyToOne
     @JoinColumn(name = "region_id")
     private Region region;
 
-    @ManyToOne
-    @JoinColumn(name = "location_id")
-    private Location location;
-
     // Getters and setters
-    public Long getBattleId() {
-        return battleId;
-    }
-
-    public void setBattleId(Long battleId) {
-        this.battleId = battleId;
-    }
 
     public String getName() {
         return name;
@@ -66,11 +62,11 @@ public class Battle {
         this.year = year;
     }
 
-    public Integer getBattleNumber() {
+    public Long getBattleNumber() {
         return battleNumber;
     }
 
-    public void setBattleNumber(Integer battleNumber) {
+    public void setBattleNumber(Long battleNumber) {
         this.battleNumber = battleNumber;
     }
 
@@ -130,14 +126,6 @@ public class Battle {
         this.summer = summer;
     }
 
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
     public Region getRegion() {
         return region;
     }
@@ -154,11 +142,19 @@ public class Battle {
         this.note = note;
     }
 
-    public List<BattleParticipant> getParticipants() {
+    public Set<BattleParticipant> getParticipants() {
         return participants;
     }
 
-    public void setParticipants(List<BattleParticipant> participants) {
+    public void setParticipants(Set<BattleParticipant> participants) {
         this.participants = participants;
+    }
+
+    public Set<BattleLocation> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(Set<BattleLocation> locations) {
+        this.locations = locations;
     }
 }

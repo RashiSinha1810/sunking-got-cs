@@ -15,15 +15,19 @@ import com.example.got.got.dto.BattleCountRecordsDto;
 import com.example.got.got.dto.BattleDetailsDto;
 import com.example.got.got.model.Battle;
 import com.example.got.got.model.BattleParticipant;
+import com.example.got.got.model.Location;
 
 @Service
 public class GOTBattleService {
 
-    @Autowired private BattleRepository battleRepo;
-    @Autowired private RegionRepository regionRepo;
-    @Autowired private LocationRepository locationRepo;
-    @Autowired private ParticipantRepository participantRepo;
-
+    @Autowired
+    private BattleRepository battleRepo;
+    @Autowired
+    private RegionRepository regionRepo;
+    @Autowired
+    private LocationRepository locationRepo;
+    @Autowired
+    private ParticipantRepository participantRepo;
 
     public BattleCountRecordsDto getBattleCount() {
         BattleCountRecordsDto count = new BattleCountRecordsDto();
@@ -36,21 +40,11 @@ public class GOTBattleService {
     }
 
     public List<RegionLocationDto> listPlaces() {
-        List<Battle> battles = battleRepo.findAll();
-        Map<String, Set<String>> regionMap = new HashMap<>();
-
-        for (Battle battle : battles) {
-            if (battle.getRegion() != null && battle.getLocation() != null) {
-                String regionName = battle.getRegion().getName();
-                String locationName = battle.getLocation().getName();
-                regionMap.putIfAbsent(regionName, new HashSet<>());
-                regionMap.get(regionName).add(locationName);
-            }
-        }
-
-        return regionMap.entrySet().stream()
-            .map(entry -> new RegionLocationDto(entry.getKey(), new ArrayList<>(entry.getValue())))
-            .collect(Collectors.toList());
+        return regionRepo.findAll()
+                .stream()
+                .map(region -> new RegionLocationDto(region.getName(),
+                        region.getLocations().stream().map(Location::getName).collect(Collectors.toList())))
+                .collect(Collectors.toList());
     }
 
     public Optional<BattleDetailsDto> getBattleByName(String name) {
@@ -59,7 +53,12 @@ public class GOTBattleService {
             dto.setName(battle.getName());
             dto.setYear(battle.getYear());
             dto.setRegion(battle.getRegion() != null ? battle.getRegion().getName() : null);
-            dto.setLocation(battle.getLocation() != null ? battle.getLocation().getName() : null);
+            List<String> locations = battle.getLocations().size() > 0
+                    ? battle.getLocations().stream()
+                            .map(location -> location.getLocation().getName())
+                            .collect(Collectors.toList())
+                    : Collections.emptyList();
+            dto.setLocations(locations);
             dto.setAttackerOutcome(battle.getAttackerOutcome());
 
             List<String> attackers = new ArrayList<>();
@@ -86,7 +85,7 @@ public class GOTBattleService {
             dto.setDefenders(defenders);
             dto.setAttackerCommanders(attackerCommanders);
             dto.setDefenderCommanders(defenderCommanders);
-            dto.setBattleNumber(battle.getBattleId());
+            dto.setBattleNumber(battle.getBattleNumber());
             dto.setBattleType(battle.getBattleType());
             dto.setAttackerSize(battle.getAttackerSize());
             dto.setDefenderSize(battle.getDefenderSize());

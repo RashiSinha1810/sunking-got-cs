@@ -9,7 +9,10 @@ import jakarta.persistence.*;
     3. Their role (attacker, defender, commander, etc.) is dynamic
 */ 
 @Entity
-@Table(name = "battle_participants")
+@Table(name = "battle_participants", indexes = {
+    @Index(name = "idx_battle_id", columnList = "battle_id"),
+    @Index(name = "idx_participant_id", columnList = "participant_id")
+})
 public class BattleParticipant {
 
     @EmbeddedId

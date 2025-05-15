@@ -4,18 +4,19 @@ import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "regions")
+@Table(name = "regions", indexes = {
+        @Index(name = "idx_region_id", columnList = "regionId"),
+})
 public class Region {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long regionId;
 
     private String name;
@@ -39,5 +40,12 @@ public class Region {
     public void setName(String name) {
         this.name = name;
     }
-}
 
+    public List<Location> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(List<Location> locations) {
+        this.locations = locations;
+    }
+}

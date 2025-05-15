@@ -1,19 +1,20 @@
 package com.example.got.got.model;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "locations")
+@Table(name = "locations", indexes = {
+    @Index(name = "idx_location_id", columnList = "locationId"),
+})
 public class Location {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long locationId;
 
     private String name;
@@ -47,4 +48,3 @@ public class Location {
         this.region = region;
     }
 }
-

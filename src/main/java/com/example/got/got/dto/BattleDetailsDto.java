@@ -7,7 +7,7 @@ public class BattleDetailsDto {
     private String name;
     private Integer year;
     private String region;
-    private String location;
+    private List<String> locations;
     private String attackerOutcome;
     private String battleType;
     private Integer majorDeath;
@@ -49,12 +49,12 @@ public class BattleDetailsDto {
         this.region = region;
     }
 
-    public String getLocation() {
-        return location;
+    public List<String> getLocations() {
+        return locations;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setLocations(List<String> locations) {
+        this.locations = locations;
     }
 
     public String getAttackerOutcome() {

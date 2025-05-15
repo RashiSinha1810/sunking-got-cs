@@ -8,25 +8,25 @@ import java.util.Objects;
 // In such case, we need to create a composite key class (combination of battle_id and participant_id)
 // This class will be used as the @EmbeddedId in the BattleParticipant entity.
 @Embeddable
-public class BattleParticipantId implements Serializable {
+public class BattleLocationId implements Serializable {
 
     private Long battleId;
-    private Long participantId;
+    private Long locationId;
 
     @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof BattleParticipantId))
+        if (!(o instanceof BattleLocationId))
             return false;
-        BattleParticipantId that = (BattleParticipantId) o;
+        BattleLocationId that = (BattleLocationId) o;
         return Objects.equals(battleId, that.battleId) &&
-                Objects.equals(participantId, that.participantId);
+                Objects.equals(locationId, that.locationId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(battleId, participantId);
+        return Objects.hash(battleId, locationId);
     }
 
     // Getters and setters
@@ -38,11 +38,11 @@ public class BattleParticipantId implements Serializable {
         this.battleId = battleId;
     }
 
-    public Long getParticipantId() {
-        return participantId;
+    public Long getLocationId() {
+        return locationId;
     }
 
-    public void setParticipantId(Long participantId) {
-        this.participantId = participantId;
+    public void setLocationId(Long locationId) {
+        this.locationId = locationId;
     }
 }
