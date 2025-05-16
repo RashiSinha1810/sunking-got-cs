@@ -1,4 +1,3 @@
-"# sunking-got-cs" 
 ## Overview
 
 This project, **sunking-got-cs**, is a microservice designed to manage and provide APIs for the Game of Thrones universe. It includes features for managing characters, houses, and events.
@@ -136,7 +135,7 @@ This project, **sunking-got-cs**, is a microservice designed to manage and provi
 - Enable Email/Slack Notifications
     Notify stakeholders on success or failure of CSV uploads or batch jobs
     Publish results to SNS Topics (success_notifications, failure_notifications)
-    
+
 - Integrate CloudWatch Logging
     Ensure structured and searchable logs for all backend operations.
     
