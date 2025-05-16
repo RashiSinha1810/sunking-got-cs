@@ -96,10 +96,10 @@ This project, **sunking-got-cs**, is a microservice designed to manage and provi
     - When a new file is uploaded, previous data would be truncated and new data would be added.This is to achieve full data refresh. 
 
 ## Deployment Plan
-   -Push code to main.
-   -GitHub Actions triggers deploy.yml.
-   -The workflow connects EC2 via SSH.
-   -Code is pulled, Docker image is built, container is deployed.
+   - Push code to main.
+   - GitHub Actions triggers deploy.yml.
+   - The workflow connects EC2 via SSH.
+   - Code is pulled, Docker image is built, container is deployed.
 
 ## Notes
 - Ensure the EC2 instance has Docker installed and is properly configured.
