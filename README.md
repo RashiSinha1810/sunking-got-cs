@@ -92,27 +92,14 @@ This project, **sunking-got-cs**, is a microservice designed to manage and provi
     - ✅ Content Validation:
         - year, battle_number, attacker_size, and defender_size should be numeric
         - Fields like attacker_king, region, location must not be null
+- **Note**:
+    - When a new file is uploaded, previous data would be truncated and new data would be added.This is to achieve full data refresh. 
 
 ## Deployment Plan
-
-1. **Build the Docker Image**:
-     - Use the provided `Dockerfile` to build the application image.
-     - Command: `docker build -t sunking-got-cs .`
-
-2. **Generate the JAR File**:
-     - Use Maven to package the application into a JAR file.
-     - Command: `mvn clean package` or `gradle build`.
-
-3. **GitHub Actions for CI/CD**:
-     - A GitHub Actions workflow is configured to:
-         - Build the Docker image.
-         - Push the image to a container registry (e.g., Docker Hub or Amazon ECR).
-         - Deploy the application to an EC2 instance.
-
-4. **Deploy to EC2**:
-     - Pull the Docker image on the EC2 instance.
-     - Run the container using `docker run` with appropriate environment variables and port mappings.
-     - Check /.github/workflow/deploy.yml
+   - Push code to main.
+   - GitHub Actions triggers deploy.yml.
+   - The workflow connects EC2 via SSH.
+   - Code is pulled, Docker image is built, container is deployed.
 
 ## Notes
 - Ensure the EC2 instance has Docker installed and is properly configured.
