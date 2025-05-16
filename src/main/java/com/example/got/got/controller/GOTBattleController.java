@@ -15,15 +15,21 @@ import com.example.got.got.dto.ApiResponseDto;
 import com.example.got.got.dto.BattleCountRecordsDto;
 import com.example.got.got.dto.BattleDetailsDto;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 @RestController
 @RequestMapping("/got")
 public class GOTBattleController {
+
+    private static final Logger logger = LogManager.getLogger(GOTBattleController.class);
 
     @Autowired
     private GOTBattleService battleService;
 
     @GetMapping("/count")
     public ResponseEntity<ApiResponseDto<BattleCountRecordsDto>> count() {
+        logger.info("Received request to get battle count");
         return ResponseEntity.ok(
                 ApiResponseDto.success(battleService.getBattleCount(),
                         null));
@@ -31,18 +37,26 @@ public class GOTBattleController {
 
     @GetMapping("/list")
     public ResponseEntity<ApiResponseDto<List<RegionLocationDto>>> listPlaces() {
-        List<RegionLocationDto> places = battleService.listPlaces();
-        return ResponseEntity.ok(ApiResponseDto.success(places, null));
+        logger.info("Received request to list places");
+        return ResponseEntity.ok(ApiResponseDto.success(battleService.listPlaces(), null));
     }
 
     @GetMapping("/battle")
     public ResponseEntity<ApiResponseDto<BattleDetailsDto>> getBattle(@RequestParam String name) {
+        logger.info("Received request to get battle details for name: {}", name);
         if (name == null || name.trim().isEmpty()) {
+            logger.warn("Battle name is missing in the request");
             return ResponseEntity.badRequest().body(ApiResponseDto.error("Battle name is required"));
         }
 
         return battleService.getBattleByName(name)
-                .map(dto -> ResponseEntity.ok(ApiResponseDto.success(dto, "Battle details found")))
-                .orElse(ResponseEntity.badRequest().body(ApiResponseDto.error("Battle not found")));
+                .map(dto -> {
+                    logger.info("Battle details found for name: {}", name);
+                    return ResponseEntity.ok(ApiResponseDto.success(dto, "Battle details found"));
+                })
+                .orElseGet(() -> {
+                    logger.warn("Battle not found for name: {}", name);
+                    return ResponseEntity.badRequest().body(ApiResponseDto.error("Battle not found"));
+                });
     }
 }

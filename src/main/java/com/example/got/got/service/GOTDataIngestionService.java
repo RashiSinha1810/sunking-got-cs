@@ -15,6 +15,9 @@ import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.util.*;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 @Service
 public class GOTDataIngestionService {
 
@@ -30,6 +33,8 @@ public class GOTDataIngestionService {
     private LocationRepository locationRepo;
     @Autowired
     private BattleLocationRepository blRepo;
+
+    private static final Logger logger = LogManager.getLogger(GOTDataIngestionService.class);
 
     private BattleParticipant.Role resolveRole(String columnName) {
         switch (columnName.toLowerCase()) {
@@ -65,7 +70,9 @@ public class GOTDataIngestionService {
     }
 
     public void ingestCsv(MultipartFile file) throws Exception {
+        logger.info("Starting CSV ingestion");
         try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
+            logger.info("Reading CSV header");
             String[] header = reader.readNext(); // skip header
             Map<String, Integer> headerIndexMap = new HashMap<>();
             for (int i = 0; i < header.length; i++) {
@@ -74,6 +81,7 @@ public class GOTDataIngestionService {
 
             String[] row;
             while ((row = reader.readNext()) != null) {
+                logger.debug("Processing row: {}", (Object) row);
                 // Battle fields
                 String name = get(row, headerIndexMap, "name");
                 String year = get(row, headerIndexMap, "year");
@@ -231,6 +239,9 @@ public class GOTDataIngestionService {
                 }
 
             }
+        } catch (Exception e) {
+            logger.error("Error during CSV ingestion: {}", e.getMessage(), e);
+            throw e;
         }
     }
 
@@ -261,6 +272,10 @@ public class GOTDataIngestionService {
                 "location",
                 "region",
                 "note");
+
+        logger.info("Validating CSV headers");
+        logger.info("Required headers: {}", requiredHeaders);
+        logger.info("Reading CSV file: {}", file.getOriginalFilename());
 
         try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
             String[] header = reader.readNext();
@@ -310,6 +325,8 @@ public class GOTDataIngestionService {
         Map<String, Participant> participantMap = new HashMap<>();
         Map<String, Integer> headerIndexMap = new HashMap<>();
 
+        logger.info("Starting CSV ingestion with bulk insert");
+        logger.info("Reading CSV header");
         try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
             String[] header = reader.readNext(); // skip header
             for (int i = 0; i < header.length; i++) {
@@ -381,6 +398,8 @@ public class GOTDataIngestionService {
             reader.close();
 
         }
+        logger.info("Finished reading CSV header and initial data");
+        logger.info("Reading CSV data");
 
         try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
 
@@ -465,10 +484,15 @@ public class GOTDataIngestionService {
                 }
             }
 
+            logger.info("Saving data to database");
+
+
             battleRepo.saveAll(battleList);
             bpRepo.saveAll(bpList);
             blRepo.saveAll(blList);
+            logger.info("Data saved successfully");
             reader.close();
+
         }
     }
 
