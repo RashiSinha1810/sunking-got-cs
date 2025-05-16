@@ -92,7 +92,7 @@ This project, **sunking-got-cs**, is a microservice designed to manage and provi
     - ✅ Content Validation:
         - year, battle_number, attacker_size, and defender_size should be numeric
         - Fields like attacker_king, region, location must not be null
-**Note**:
+- **Note**:
     - When a new file is uploaded, previous data would be truncated and new data would be added.This is to achieve full data refresh. 
 
 ## Deployment Plan
